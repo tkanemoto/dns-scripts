@@ -43,9 +43,6 @@ done
 
 cached_ip=/tmp/current_ip
 chech_url=http://api.ipify.org
-SuccessExec=''
-FailedExec=''
-
 
 echo -n "Checking current 'Public IP' from '${chech_url}'..."
 public_ip=$(curl -kLs ${chech_url})
@@ -57,21 +54,21 @@ else
 fi
 
 if [ "$(cat ${cached_ip} 2>/dev/null)" != "${public_ip}" ] ; then
-  echo -n "Checking '${Domain}' IP records from 'GoDaddy'..."
+  echo -n "Checking '${domain}' IP records from 'GoDaddy'..."
   check=$(curl -kLsH"Authorization: sso-key ${key}:${secret}" \
                -H"Content-type: application/json" \
                https://api.godaddy.com/v1/domains/${domain}/records/${type}/${name} \
                2>/dev/null | sed -r 's/.+data":"(.+)","t.+/\1/g' 2>/dev/null)
   if [ $? -eq 0 ] && [ "${check}" = "${public_ip}" ] ; then
     echo -n ${check} > ${cached_ip}
-    echo -e "unchanged!\nCurrent 'Public IP' matches 'GoDaddy' records. No update required!"
+    echo -e "unchanged!\nCurrent public IP (${check}) matches GoDaddy records. No update required!"
   else
-    echo -en "changed!\nUpdating '${domain}'..."
+    echo -en "changed!\nUpdating '${domain}' to ${check}..."
     update=$(curl -kLsXPUT -H"Authorization: sso-key ${key}:${secret}" \
                   -H"Content-type: application/json" \
                   https://api.godaddy.com/v1/domains/${domain}/records/${type}/${name} \
                   -d "{\"data\":\"${public_ip}\",\"ttl\":${ttl}}" 2>/dev/null)
-    if [ $? -eq 0 ] && [ "${update}" = "{}" ];then
+    if [ $? -eq 0 ] && [ "${update}" = "{}" ] ; then
       echo -n ${public_ip} > ${cached_ip}
       echo "Success!"
     else
