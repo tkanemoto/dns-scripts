@@ -44,7 +44,7 @@ done
 cached_ip=/tmp/current_ip
 chech_url=http://api.ipify.org
 
-echo -n "Checking current 'Public IP' from '${chech_url}'..."
+echo -n "Checking current public IP from '${chech_url}'..."
 public_ip=$(curl -kLs ${chech_url})
 if [ $? -eq 0 ] && [[ "${public_ip}" =~ [0-9]{1,3}\.[0-9]{1,3} ]];then
   echo "Public IP : ${public_ip}!"
@@ -77,6 +77,6 @@ if [ "$(cat ${cached_ip} 2>/dev/null)" != "${public_ip}" ] ; then
     fi  
   fi
 else
-  echo "Current 'Public IP' matches 'Cached IP' recorded. No update required!"
+  echo "Current public IP matches cached IP recorded (${public_ip}). No update required!"
 fi
 exit $?
