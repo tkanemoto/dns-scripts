@@ -77,6 +77,10 @@ else
     echo "$record_identifier" >> $id_file
 fi
 
+curr_ip=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier")
+
+log -e "$Current IP : $curr_ip"
+
 update=$(\
   curl \
     -s \
@@ -93,7 +97,7 @@ if [[ $update == *"\"success\":false"* ]]; then
     echo -e "$message"
     exit 1 
 else
-    message="IP changed to: $ip"
+    message="Updated IP to : $ip"
     echo "$ip" > $ip_file
     log "$message"
     echo "$message"
