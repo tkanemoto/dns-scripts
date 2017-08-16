@@ -18,6 +18,10 @@ while [[ $# -gt 1 ]] ; do
       record_name=$2
       shift
       ;;
+    -t|--type)
+      record_type=$2
+      shift
+      ;;
     *)
     ;;
   esac
@@ -28,6 +32,7 @@ done
 [ -n "$auth_email" ] || { echo 'Missing auth email' ; exit 1 ; }
 [ -n "$zone_name" ] || { echo 'Missing zone name' ; exit 1 ; }
 [ -n "$record_name" ] || { echo 'Missing record name' ; exit 1 ; }
+[ -n "$record_type" ] || record_type=A
 
 ip=$(curl -s http://ipv4.icanhazip.com)
 ip_file="ip.txt"
@@ -68,7 +73,7 @@ else
       curl \
         -s \
         -X GET \
-        "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?name=$record_name" \
+        "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records?name=$record_name&type=$record_type" \
         -H "X-Auth-Email: $auth_email" \
         -H "X-Auth-Key: $auth_key" \
         -H "Content-Type: application/json" | \
