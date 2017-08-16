@@ -79,7 +79,7 @@ fi
 
 curr_ip=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier")
 
-log -e "$Current IP : $curr_ip"
+log "$Current IP : $curr_ip"
 
 update=$(\
   curl \
