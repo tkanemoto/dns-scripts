@@ -82,7 +82,15 @@ else
     echo "$record_identifier" >> $id_file
 fi
 
-curr_ip=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier")
+curr_ip=$(\
+  curl \
+    -s \
+    -X GET \
+    "https://api.cloudflare.com/client/v4/zones/$zone_identifier/dns_records/$record_identifier" \
+    -H "X-Auth-Email: $auth_email" \
+    -H "X-Auth-Key: $auth_key" \
+    -H "Content-Type: application/json" | \
+  grep -Po '(?<="content":")[^"]*')
 
 log "$Current IP : $curr_ip"
 
