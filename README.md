@@ -5,7 +5,7 @@ A collection of scripts that updates the DNS record on services such as GoDaddy 
 Usage:
 
 ```bash
-./update-clareflare.sh [-k|--key key] [-s|--secret secret] [-d|--domain domain] [-n|--name name] [-l|--ttl TTL]
+./update-godaddy.sh [-k|--key key] [-s|--secret secret] [-d|--domain domain] [-n|--name name] [-l|--ttl TTL]
 ```
 
 ## CloudFlare
