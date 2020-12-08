@@ -49,7 +49,7 @@ id_file="cloudflare.ids"
 log "Check Initiated"
 
 if [ -z "$ip" ]; then
-    log "Could not get public IP"
+    echo -e "Updated IP is empty"
     exit 1
 fi
 
@@ -57,6 +57,7 @@ if [ -f $ip_file ]; then
     old_ip=$(cat $ip_file)
     if [ "$ip" == "$old_ip" ]; then
         log "IP has not changed."
+        echo "IP has not changed."
         exit 0
     fi
 fi
@@ -111,11 +112,13 @@ update=$(\
     --data "{\"id\":\"$zone_identifier\",\"type\":\"A\",\"name\":\"$record_name\",\"content\":\"$ip\"}")
 
 if [[ $update == *"\"success\":false"* ]]; then
-    message="API UPDATE FAILED. DUMPING RESULTS:\n$update"
+    message="Update failed:\n$update"
     log "$message"
+    echo -e "$message"
     exit 1 
 else
     message="Updated IP to : $ip"
     echo "$ip" > $ip_file
     log "$message"
+    echo -e "$message"
 fi
