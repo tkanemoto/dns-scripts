@@ -34,7 +34,7 @@ done
 [ -n "$record_name" ] || { echo 'Missing record name' ; exit 1 ; }
 [ -n "$record_type" ] || record_type=A
 
-ip=$(curl -s http://ipv4.icanhazip.com)
+ip=$(curl -s https://ipv4.icanhazip.com)
 ip_file="ip.txt"
 id_file="cloudflare.ids"
 
@@ -50,7 +50,7 @@ log "Check Initiated"
 
 if [ -f $ip_file ]; then
     old_ip=$(cat $ip_file)
-    if [ $ip == $old_ip ]; then
+    if [ "$ip" == "$old_ip" ]; then
         echo "IP has not changed."
         exit 0
     fi
@@ -92,7 +92,8 @@ curr_ip=$(\
     -H "Content-Type: application/json" | \
   grep -Po '(?<="content":")[^"]*')
 
-log "$Current IP : $curr_ip"
+log "Current IP : $curr_ip"
+log "New IP     : $ip"
 
 update=$(\
   curl \
@@ -107,11 +108,9 @@ update=$(\
 if [[ $update == *"\"success\":false"* ]]; then
     message="API UPDATE FAILED. DUMPING RESULTS:\n$update"
     log "$message"
-    echo -e "$message"
     exit 1 
 else
     message="Updated IP to : $ip"
     echo "$ip" > $ip_file
     log "$message"
-    echo "$message"
 fi
