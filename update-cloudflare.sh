@@ -34,10 +34,6 @@ done
 [ -n "$record_name" ] || { echo 'Missing record name' ; exit 1 ; }
 [ -n "$record_type" ] || record_type=A
 
-ip=$(curl -s https://ipv4.icanhazip.com)
-ip_file="ip.txt"
-id_file="cloudflare.ids"
-
 # LOGGER
 log() {
     if [ -n "$1" ]; then
@@ -45,8 +41,17 @@ log() {
     fi
 }
 
+ip=$(curl -s https://ipv4.icanhazip.com)
+ip_file="ip.txt"
+id_file="cloudflare.ids"
+
 # SCRIPT START
 log "Check Initiated"
+
+if [ -z "$ip" ]; then
+    log "Could not get public IP"
+    exit 1
+fi
 
 if [ -f $ip_file ]; then
     old_ip=$(cat $ip_file)
