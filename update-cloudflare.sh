@@ -22,6 +22,10 @@ while [[ $# -gt 1 ]] ; do
       record_type=$2
       shift
       ;;
+    -p|--proxied)
+      proxied=$2
+      shift
+      ;;
     *)
     ;;
   esac
@@ -33,6 +37,7 @@ done
 [ -n "$zone_name" ] || { echo 'Missing zone name' ; exit 1 ; }
 [ -n "$record_name" ] || { echo 'Missing record name' ; exit 1 ; }
 [ -n "$record_type" ] || record_type=A
+[ -n "$proxied" ] || proxied="true"
 
 # LOGGER
 log() {
@@ -109,7 +114,7 @@ update=$(\
     -H "X-Auth-Email: $auth_email" \
     -H "X-Auth-Key: $auth_key" \
     -H "Content-Type: application/json" \
-    --data "{\"id\":\"$zone_identifier\",\"type\":\"A\",\"name\":\"$record_name\",\"content\":\"$ip\"}")
+    --data "{\"id\":\"$zone_identifier\",\"type\":\"A\",\"name\":\"$record_name\",\"content\":\"$ip\",\"proxied\":$proxied}")
 
 if [[ $update == *"\"success\":false"* ]]; then
     message="Update failed:\n$update"
